@@ -20,7 +20,5 @@ This project provides a Python-based backend for interacting with the Meroshare 
 - Python 3.x
 - requests
 
-## License
-
-[Add your license here]
+ 
 

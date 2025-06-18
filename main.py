@@ -57,6 +57,7 @@ class MeroShare:
                         print("Invalid bank ID. Please try again.")
 
     def apply_shares(self):
+        is_right = False
         with requests.Session() as session:
             get_DPs = 'https://webbackend.cdsc.com.np/api/meroShare/capital/'
             response = session.get(get_DPs)
@@ -118,7 +119,14 @@ class MeroShare:
                     response = session.get(checkEligibility_url, headers={
                         'Authorization': authorazation})
                     if response.json().get('message') == 'Customer can apply.':
-
+                        if company.get('reservationTypeName') == "RIGHT SHARE": 
+                            print("You are eligible for Right Share")
+                            reserve_quantity_url='https://webbackend.cdsc.com.np/api/shareCriteria/boid/'+str(get_demate)+'/'+str(get_companyShareId)
+                            response = session.get(reserve_quantity_url, headers={
+                                'Authorization': authorazation})
+                            self.apply_kitta = int(response.json().get('reservedQuantity'))
+                            right_id = response.json().get('id')
+                            is_right = True
                         # GET FULL DETAIL OF BANK
                         bankDetail_url = 'https://webbackend.cdsc.com.np/api/meroShare/bank/' + \
                             str(get_bankID)
@@ -151,6 +159,8 @@ class MeroShare:
                                     'demat': get_demate,
                                     'transactionPIN': self.transactionPIN
                                     }
+                            if is_right:
+                                payload['shareCriteriaId'] = right_id
                             response = session.post(apply_url, json=payload, headers={
                                                     'Authorization': authorazation})
                             if response.status_code == 201 or response.status_code == 200:

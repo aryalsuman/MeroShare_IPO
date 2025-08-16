@@ -71,7 +71,29 @@ class MeroShare:
                        'password': self.password,
                        'username': self.username,
                        }
-            response = session.post(auth_url, json=payload)
+            
+            headers = {
+                "accept": "application/json, text/plain, */*",
+                "accept-encoding": "gzip, deflate, br, zstd",
+                "accept-language": "en-US,en;q=0.9",
+                "authorization": "null",
+                "cache-control": "no-cache",
+                "connection": "keep-alive",
+                "content-type": "application/json",
+                "dnt": "1",
+                "host": "webbackend.cdsc.com.np",
+                "origin": "https://meroshare.cdsc.com.np",
+                "pragma": "no-cache",
+                "referer": "https://meroshare.cdsc.com.np/",
+                "sec-ch-ua": '"Not;A=Brand";v="99", "Google Chrome";v="139", "Chromium";v="139"',
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": '"Windows"',
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-site",
+                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+            }
+            response = requests.post(url=auth_url, json=payload,headers=headers)
             # print(response.json())
 
             authorazation = response.headers['Authorization']
@@ -98,7 +120,7 @@ class MeroShare:
 
             payload = {'filterFieldParams': [{'key': 'companyIssue.companyISIN.script', 'alias': 'Scrip'}, {'key': 'companyIssue.companyISIN.company.name', 'alias': 'Company Name'}, {'key': 'companyIssue.assignedToClient.name', 'value': '', 'alias': 'Issue Manager'}],
                        'page': 1, 'size': 10, 'searchRoleViewConstants': 'VIEW_APPLICABLE_SHARE', 'filterDateParams': [{'key': 'minIssueOpenDate', 'condition': '', 'alias': '', 'value': ''}, {'key': 'maxIssueCloseDate', 'condition': '', 'alias': '', 'value': ''}]}
-            response = session.post(applicableIssue_url, json=payload, headers={
+            response = requests.post(applicableIssue_url, json=payload, headers={
                                     'Authorization': authorazation})
             # print(response.json())
 

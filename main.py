@@ -27,7 +27,7 @@ class MeroShare:
                        'password': self.password,
                        'username': self.username
                        }
-            response = session.post(auth_url, json=payload)
+            response = requests.post(auth_url, json=payload)
             # print(response)
 
             authorazation = response.headers['Authorization']
@@ -35,7 +35,7 @@ class MeroShare:
             # for bank details
             bank_url = 'https://webbackend.cdsc.com.np/api/meroShare/bank/'
 
-            response = session.get(
+            response = requests.get(
                 bank_url, headers={'Authorization': authorazation})
             # print(response.json())
             print("Available Banks:")
@@ -99,7 +99,7 @@ class MeroShare:
             authorazation = response.headers['Authorization']
 
             ownDetails_url = 'https://webbackend.cdsc.com.np/api/meroShare/ownDetail/'
-            response = session.get(ownDetails_url, headers={
+            response = requests.get(ownDetails_url, headers={
                 'Authorization': authorazation})
             get_demate = response.json().get('demat')
             print('-'*40)
@@ -109,7 +109,7 @@ class MeroShare:
 
             bank_url = 'https://webbackend.cdsc.com.np/api/meroShare/bank/'
 
-            response = session.get(
+            response = requests.get(
                 bank_url, headers={'Authorization': authorazation})
             # print(response.json())
         ##############################################
@@ -138,13 +138,13 @@ class MeroShare:
                     checkEligibility_url = 'https://webbackend.cdsc.com.np/api/meroShare/applicantForm/customerType/' + \
                         str(get_companyShareId)+'/'+str(get_demate)
                     # print(checkEligibility_url)
-                    response = session.get(checkEligibility_url, headers={
+                    response = requests.get(checkEligibility_url, headers={
                         'Authorization': authorazation})
                     if response.json().get('message') == 'Customer can apply.':
                         if company.get('reservationTypeName') == "RIGHT SHARE": 
                             print("You are eligible for Right Share")
                             reserve_quantity_url='https://webbackend.cdsc.com.np/api/shareCriteria/boid/'+str(get_demate)+'/'+str(get_companyShareId)
-                            response = session.get(reserve_quantity_url, headers={
+                            response = requests.get(reserve_quantity_url, headers={
                                 'Authorization': authorazation})
                             self.apply_kitta = int(response.json().get('reservedQuantity'))
                             right_id = response.json().get('id')
@@ -152,7 +152,7 @@ class MeroShare:
                         # GET FULL DETAIL OF BANK
                         bankDetail_url = 'https://webbackend.cdsc.com.np/api/meroShare/bank/' + \
                             str(get_bankID)
-                        response = session.get(bankDetail_url, headers={
+                        response = requests.get(bankDetail_url, headers={
                             'Authorization': authorazation})
                         print("Bank-Branch:"+response.json()[0].get('branchName'))
                         response = response.json()[0]
@@ -183,9 +183,10 @@ class MeroShare:
                                     }
                             if is_right:
                                 payload['shareCriteriaId'] = right_id
-                            response = session.post(apply_url, json=payload, headers={
+                            response = requests.post(apply_url, json=payload, headers={
                                                     'Authorization': authorazation})
-                            if response.status_code == 201 or response.status_code == 200:
+                            # print(response.text)
+                            if "Share has been applied successfully." in response.text and (response.status_code == 201 or response.status_code == 200):
                                 print('***********')
                                 print('*         *')
                                 print('* Success *')

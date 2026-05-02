@@ -2,6 +2,8 @@ import csv
 
 import requests
 
+import time
+
 
 class MeroShare:
     def __init__(self, dp, password, username, apply_kitta, crnno, transactionPIN, get_bankID_initial=0):
@@ -217,6 +219,7 @@ if __name__ == "__main__":
     with open('Acnt.csv', 'r') as file:
         reader = csv.reader(file)
         for row in reader:
+           
             if reader.line_num < 2:
                 continue
             get_dp = row[0]
@@ -237,3 +240,5 @@ if __name__ == "__main__":
                 meroshare = MeroShare(get_dp, get_password, get_username,
                                       get_kitta, get_crnno, get_transactionPIN, get_bankID_initial)
                 meroshare.apply_shares()
+            print("Waiting for 10 seconds before next account...")
+            time.sleep(10)
